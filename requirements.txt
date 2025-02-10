@@ -1,4 +1,4 @@
 Flask==2.3.2
 Flask-SQLAlchemy==3.1.1
 psycopg2-binary==2.9.7
-gunicorn==21.2.0  # Ensure Gunicorn is installed for Railway
+gunicorn==21.2.0
