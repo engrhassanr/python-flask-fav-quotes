@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, static_folder="static")
 
-# Get DATABASE_URL from Docker Compose environment variable
+# Get DATABASE_URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/quotes_db")
 
 # Ensure compatibility with PostgreSQL connection strings
@@ -17,16 +17,17 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # Initialize database
 db = SQLAlchemy(app)
 
+# Create tables on first request instead of on import
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
 # Define Quote model
 class Quote(db.Model):
     __tablename__ = "quotes"
     id = db.Column(db.Integer, primary_key=True)
     author = db.Column(db.String(100), nullable=False)
     quote = db.Column(db.Text, nullable=False)
-
-# Create database tables
-with app.app_context():
-    db.create_all()
 
 @app.route("/")
 def home():
