@@ -3,7 +3,7 @@ FROM python:3.9-slim
 
 # Install PostgreSQL client and build tools
 RUN apt-get update && apt-get install -y \
-    libpq-dev gcc && rm -rf /var/lib/apt/lists/*
+    libpq-dev gcc
 
 # Set working directory
 WORKDIR /app
@@ -15,10 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application files
 COPY . .
 
-# Expose port (default: 5000)
+# Expose port
 EXPOSE 5000
 
-# Run the application with Gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
-
-
+# Run the application
+CMD ["python", "app.py"]

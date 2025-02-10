@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='bootstrap.min.css') }}"
+    />
+    <title>Edit Quote</title>
+
+    <style>
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f8f9fa;
+      }
+      .form-container {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h4 class="text-center mb-4">Edit Quote</h4>
+      <form
+        action="{{ url_for('edit_quote', quote_id=quote.id) }}"
+        method="POST"
+      >
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="author"
+            name="author"
+            placeholder="Author Name"
+            value="{{ quote.author }}"
+            required
+          />
+          <label for="author">Author</label>
+        </div>
+        <div class="form-floating">
+          <textarea
+            class="form-control"
+            id="quote"
+            name="quote"
+            placeholder="Enter your quote"
+            style="height: 200px"
+            required
+          >
+{{ quote.quote }}</textarea
+          >
+          <label for="quote">Quote</label>
+        </div>
+        <button type="submit" class="btn btn-success w-100 mt-3">
+          Update Quote
+        </button>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary w-100 mt-2"
+          >Cancel</a
+        >
+      </form>
+    </div>
+  </body>
+</html>

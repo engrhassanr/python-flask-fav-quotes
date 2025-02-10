@@ -1,25 +1,15 @@
-import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__, static_folder="static")
 
-# Get DATABASE_URL from Railway (or default for local dev)
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/quotes_db")
-
-# Fix for "postgres://" to "postgresql://" (Railway uses "postgres://")
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+# PostgreSQL Database Configuration
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "postgresql://postgres:password@db:5432/quotes_db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize database
 db = SQLAlchemy(app)
-
-# Create tables at app startup
-with app.app_context():
-    db.create_all()
 
 # Define Quote model
 class Quote(db.Model):
@@ -28,15 +18,25 @@ class Quote(db.Model):
     author = db.Column(db.String(100), nullable=False)
     quote = db.Column(db.Text, nullable=False)
 
+    def __repr__(self):
+        return f"<Quote {self.id} - {self.author}>"
+
+# Create database tables
+with app.app_context():
+    db.create_all()
+
+# Home page - Displays all quotes
 @app.route("/")
 def home():
     all_quotes = Quote.query.all()
     return render_template("index.html", quotes=all_quotes)
 
+# Quotes page - Displays form to add new quotes
 @app.route("/quotes")
 def quote_form():
-    return render_template("quotes.html")  # Separate form page
+    return render_template("quotes.html")  
 
+# Processing the form submission
 @app.route("/process", methods=["POST"])
 def process():
     try:
@@ -50,22 +50,31 @@ def process():
         db.session.add(new_quote)
         db.session.commit()
 
-        return redirect(url_for("home"))
+        return redirect(url_for("home"))  
 
     except Exception as e:
-        return render_template("quotes.html", error=str(e))
+        return render_template("quotes.html", error=str(e))  
 
-@app.route('/edit/<int:quote_id>')
-def edit_quote(quote_id):
-    # Fetch and display the quote for editing
-    pass
-
-@app.route('/delete/<int:quote_id>', methods=['POST', 'GET'])
+# Delete quote
+@app.route("/delete/<int:quote_id>")
 def delete_quote(quote_id):
-    # Delete the quote from the database
-    pass
+    quote = Quote.query.get_or_404(quote_id)
+    db.session.delete(quote)
+    db.session.commit()
+    return redirect(url_for("home"))
 
+# Edit quote page
+@app.route("/edit/<int:quote_id>", methods=["GET", "POST"])
+def edit_quote(quote_id):
+    quote = Quote.query.get_or_404(quote_id)
+
+    if request.method == "POST":
+        quote.author = request.form.get("author")
+        quote.quote = request.form.get("quote")
+        db.session.commit()
+        return redirect(url_for("home"))
+
+    return render_template("edit.html", quote=quote)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
