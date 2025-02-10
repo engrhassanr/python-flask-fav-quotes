@@ -18,5 +18,6 @@ COPY . .
 # Expose port (default: 5000)
 EXPOSE ${PORT:-5000}
 
-# Run Gunicorn with environment variables
-CMD ["gunicorn", "-b", "0.0.0.0:${PORT:-5000}", "--workers", "4", "app:app"]
+# Run the application with Gunicorn
+CMD ["gunicorn", "-b", "0.0.0.0:${PORT}", "app:app"]
+
