@@ -55,7 +55,17 @@ def process():
     except Exception as e:
         return render_template("quotes.html", error=str(e))
 
+@app.route('/edit/<int:quote_id>')
+def edit_quote(quote_id):
+    # Fetch and display the quote for editing
+    pass
+
+@app.route('/delete/<int:quote_id>', methods=['POST', 'GET'])
+def delete_quote(quote_id):
+    # Delete the quote from the database
+    pass
+
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use Railway's PORT or fallback to 5000
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
