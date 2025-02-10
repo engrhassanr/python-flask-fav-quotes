@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='bootstrap.min.css') }}"
+    />
+    <title>Favorite Quotes</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav style="margin-top: 25px; text-align: end">
+        <a class="btn btn-primary" href="{{ url_for('quote_form') }}"
+          >Add a Quote</a
+        >
+      </nav>
+      <br />
+      <div class="jumbotron text-center mb-3">
+        <h1>Favorite Quotes</h1>
+      </div>
+
+      <div>
+        {% if quotes %} {% for quote in quotes %}
+        <div class="card mb-3">
+          <div class="card-body">
+            <blockquote class="blockquote">
+              <p>{{ quote.quote }}</p>
+            </blockquote>
+            <footer class="blockquote-footer">{{ quote.author }}</footer>
+          </div>
+        </div>
+        {% endfor %} {% else %}
+        <p>No quotes found. Add some!</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+  </body>
+</html>
