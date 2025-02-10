@@ -17,9 +17,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # Initialize database
 db = SQLAlchemy(app)
 
-# Create tables on first request instead of on import
-@app.before_first_request
-def create_tables():
+# Create tables at app startup
+with app.app_context():
     db.create_all()
 
 # Define Quote model
