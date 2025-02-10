@@ -3,7 +3,7 @@ FROM python:3.9-slim
 
 # Install PostgreSQL client and build tools
 RUN apt-get update && apt-get install -y \
-    libpq-dev gcc
+    libpq-dev gcc && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
