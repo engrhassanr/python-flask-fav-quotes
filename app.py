@@ -4,10 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, static_folder="static")
 
-# Get DATABASE_URL from environment
+# Get DATABASE_URL from Railway (or default for local dev)
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/quotes_db")
 
-# Ensure compatibility with PostgreSQL connection strings
+# Fix for "postgres://" to "postgresql://" (Railway uses "postgres://")
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
@@ -56,4 +56,5 @@ def process():
         return render_template("quotes.html", error=str(e))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
